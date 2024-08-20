@@ -4,7 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-var  allowedOrigins = "_allowedOriginsPolicy";
+var  corsPolicy = "_allowedOriginsPolicy";
 string? connectionString = builder.Configuration.GetConnectionString("ProjectDb");
 if (connectionString == null) {
     throw new ArgumentException("Must provide a connection string in appsettings.json");
@@ -23,7 +23,7 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy(
-        name: allowedOrigins,
+        name: corsPolicy,
         policy => {
             policy.WithOrigins(
                 "http://localhost:3000/*"
@@ -43,6 +43,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(corsPolicy);
 app.UseHttpsRedirection();
 app.MapControllers();
 
