@@ -36,7 +36,7 @@ namespace ProjectControllers {
             } 
         }
 
-        [HttpGet("/Alls")]
+        [HttpGet("")]
         public async Task<IActionResult> GetAllCustomers() 
         { 
             try {
