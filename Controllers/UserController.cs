@@ -34,6 +34,18 @@ namespace ProjectControllers {
             catch (InvalidOperationException error) {
                 return new ObjectResult(error.Message) { StatusCode = StatusCodes.Status208AlreadyReported };
             } 
+        }
+
+        [HttpGet("/Alls")]
+        public async Task<IActionResult> GetAllCustomers() 
+        { 
+            try {
+                var users = await this._userRepository.GetAllUsersAsync();
+                return Ok(users);
+            } 
+            catch (Exception error) {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            } 
         } 
     }
 }

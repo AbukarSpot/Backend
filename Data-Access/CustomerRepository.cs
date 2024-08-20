@@ -20,4 +20,21 @@ public class CustomerRepository : ICustomerRepository
         this._context.Customer.Add(payload);
         await this._context.SaveChangesAsync();
     }
+
+    public async Task<List<PublicModels.Customer>> GetAllCustomersAsync() {
+        var customers = await (
+            from Customer in this._context.Customer
+            select new {
+                Customer.CustomerId,
+                Customer.Name
+            }
+        )
+        .Select(x => new PublicModels.Customer() {
+            CustomerId = x.CustomerId,
+            Name = x.Name
+        })
+        .ToListAsync();
+
+        return customers;
+    }
 }

@@ -1,12 +1,12 @@
-
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ProjectModels {
+namespace PublicModels {
 
     [Table("Customer")]
     public class Customer {
         [Key]
+        [Required]
         [Column(TypeName = "varchar(36)")]
         public string CustomerId { get; set; }
 
@@ -15,5 +15,3 @@ namespace ProjectModels {
         public string? Name { get; set; }
     }
 }
-
-

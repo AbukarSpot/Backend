@@ -35,6 +35,18 @@ namespace ProjectControllers {
                 return new ObjectResult(ex.Message) { StatusCode = StatusCodes.Status208AlreadyReported };
             }
 
-        } 
+        }
+
+        [HttpGet("/All")]
+        public async Task<IActionResult> GetAllCustomers() 
+        { 
+            try {
+                var customers = await this._customerRepo.GetAllCustomersAsync();
+                return Ok(customers);
+            } 
+            catch (Exception error) {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            } 
+        }
     }
 }
