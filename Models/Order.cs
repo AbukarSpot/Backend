@@ -25,4 +25,10 @@ namespace ProjectModels {
         [Column(TypeName = "datetime")]
         public DateTime CreatedDate { get; set; }
     }
+
+    public class OrderRequest {
+        public string Type { get; set; }
+        public string CustomerName { get; set; }
+        public string Username { get; set; }
+    }
 }

@@ -73,29 +73,33 @@ namespace ProjectControllers {
         }
         
         [HttpGet("")]
-        public async Task<IActionResult> GetAllOrders() {
+        public async Task<IActionResult> GetAllOrders(int pageNumber) {
             try {
-                var allOrders = await this._orderRepository.GetAllOrdersAsync();
+                var allOrders = await this._orderRepository.GetAllOrdersAsync(pageNumber);
                 return Ok(allOrders);
             } 
             catch (Exception error) {
                 return StatusCode(500);
             }
         }
+
         
         [HttpPost("")]
         public async Task<IActionResult> CreateOrder(
-            string Type,
-            string CustomerName,
-            string Username
+            OrderRequest request
         ) 
         {
+            Console.WriteLine($"""
+                type: {request.Type}
+                name: {request.CustomerName}
+                user: {request.Username}
+            """);
 
             try {
                 await this._orderRepository.CreateOrderAsync(
-                    Type,
-                    CustomerName,
-                    Username
+                    request.Type,
+                    request.CustomerName,
+                    request.Username
                 );
                 return Ok();
             }

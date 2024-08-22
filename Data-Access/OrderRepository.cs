@@ -1,4 +1,5 @@
 
+using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using DatabaseContex;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using ProjectModels;
 public class OrderRepository: IOrderRepository {
 
     private readonly ProjectContext _context;
+    private readonly int _rowsPerPage = 50;
     public OrderRepository(ProjectContext context) {
         this._context = context;
     }
@@ -21,7 +23,21 @@ public class OrderRepository: IOrderRepository {
         return orderEnumValue.ToString();
     }
 
-    public async Task<IEnumerable<PublicModels.Order>> GetAllOrdersAsync() {
+    public async Task<int> GetPageCount() {
+        var rows = await (   from Order in this._context.Orders
+                            join Customers in this._context.Customer 
+                                on Order.CustomerId equals Customers.CustomerId
+                            join Users in this._context.User 
+                                on Order.UserId equals Users.UserId
+                            select 1
+                        )
+                        .ToListAsync();
+
+        int pageCount = rows.Count / this._rowsPerPage;
+        return pageCount;
+    }
+
+    public async Task<IEnumerable<PublicModels.Order>> GetAllOrdersAsync(int pageNumber) {
         var allOrders = (   from Order in this._context.Orders
                             join Customers in this._context.Customer 
                                 on Order.CustomerId equals Customers.CustomerId
@@ -36,6 +52,8 @@ public class OrderRepository: IOrderRepository {
                             }
                         )
                         .AsEnumerable()
+                        .Skip(this._rowsPerPage * pageNumber)
+                        .Take(this._rowsPerPage)
                         .Select(order => {
                             string orderType = this.GetOrderType(order.OrderType);
                             return  new PublicModels.Order(

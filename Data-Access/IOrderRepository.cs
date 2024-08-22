@@ -1,7 +1,8 @@
 using ProjectModels;
 
 public interface IOrderRepository {
-    public Task<IEnumerable<PublicModels.Order>> GetAllOrdersAsync();
+    public Task<int> GetPageCount();
+    public Task<IEnumerable<PublicModels.Order>> GetAllOrdersAsync(int page);
     public Task UpdateOrderAsync(
         string OrderId,
         DateTime CreatedDate,
