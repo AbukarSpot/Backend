@@ -17,5 +17,11 @@ public interface IOrderRepository {
         string Username
     );
 
-    public Task<IEnumerable<PublicModels.Order>> FilterOrdersAsync(string Type);
+    public Task<IEnumerable<PublicModels.Order>> FilterOrdersAsync(string Type, int pageNumber);
+    public Task<IEnumerable<PublicModels.Order>> GetSpecificCustomerOrdersAsync(string customerName, int pageNumber);
+    public Task<IEnumerable<PublicModels.Order>> GetSpecificCustomerAndTypeOrdersAsync(
+        string customerName, 
+        string typeChoice, 
+        int pageNumber
+    );
 }

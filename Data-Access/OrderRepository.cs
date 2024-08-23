@@ -9,7 +9,7 @@ using ProjectModels;
 public class OrderRepository: IOrderRepository {
 
     private readonly ProjectContext _context;
-    private readonly int _rowsPerPage = 50;
+    private readonly int _rowsPerPage = 5;
     public OrderRepository(ProjectContext context) {
         this._context = context;
     }
@@ -180,7 +180,7 @@ public class OrderRepository: IOrderRepository {
         return customer;
     }
 
-    public async Task<IEnumerable<PublicModels.Order>> FilterOrdersAsync(string Type) {
+    public async Task<IEnumerable<PublicModels.Order>> FilterOrdersAsync(string Type, int pageNumber) {
         int type = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), Type);
         var orders = (
             from Order in this._context.Orders
@@ -198,6 +198,84 @@ public class OrderRepository: IOrderRepository {
             }
         )
         .AsEnumerable()
+        .Skip(this._rowsPerPage * pageNumber)
+        .Take(this._rowsPerPage)
+        .Select(order => {
+            string orderType = this.GetOrderType(order.OrderType);
+            return  new PublicModels.Order(
+                        Id: order.Id,
+                        Date: order.CreatedDate,
+                        By: order.Username,
+                        Type: orderType,
+                        Customer: order.Name
+                    );
+        });
+
+        return orders;
+    }
+
+    public async Task<IEnumerable<PublicModels.Order>> GetSpecificCustomerOrdersAsync(
+        string customerName,
+        int pageNumber 
+    ) {
+        var orders = (
+            from Order in this._context.Orders
+            join Customers in this._context.Customer 
+                on Order.CustomerId equals Customers.CustomerId
+            join Users in this._context.User 
+                on Order.UserId equals Users.UserId
+            where Customers.Name == customerName
+            select new {
+                Order.Id,
+                Order.CreatedDate,
+                Users.Username,
+                Order.OrderType,
+                Customers.Name
+            }
+        )
+        .AsEnumerable()
+        .Skip(this._rowsPerPage * pageNumber)
+        .Take(this._rowsPerPage)
+        .Select(order => {
+            string orderType = this.GetOrderType(order.OrderType);
+            return  new PublicModels.Order(
+                        Id: order.Id,
+                        Date: order.CreatedDate,
+                        By: order.Username,
+                        Type: orderType,
+                        Customer: order.Name
+                    );
+        });
+
+        return orders;
+    }
+
+    public async Task<IEnumerable<PublicModels.Order>> GetSpecificCustomerAndTypeOrdersAsync(
+        string customerName, 
+        string typeChoice, 
+        int pageNumber 
+    ) {
+        int type = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), typeChoice);
+        var orders = (
+            from Order in this._context.Orders
+            join Customers in this._context.Customer 
+                on Order.CustomerId equals Customers.CustomerId
+            join Users in this._context.User 
+                on Order.UserId equals Users.UserId
+            where 
+                Customers.Name == customerName &&
+                Order.OrderType == type
+            select new {
+                Order.Id,
+                Order.CreatedDate,
+                Users.Username,
+                Order.OrderType,
+                Customers.Name
+            }
+        )
+        .AsEnumerable()
+        .Skip(this._rowsPerPage * pageNumber)
+        .Take(this._rowsPerPage)
         .Select(order => {
             string orderType = this.GetOrderType(order.OrderType);
             return  new PublicModels.Order(

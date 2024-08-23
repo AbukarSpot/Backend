@@ -89,12 +89,6 @@ namespace ProjectControllers {
             OrderRequest request
         ) 
         {
-            Console.WriteLine($"""
-                type: {request.Type}
-                name: {request.CustomerName}
-                user: {request.Username}
-            """);
-
             try {
                 await this._orderRepository.CreateOrderAsync(
                     request.Type,
@@ -107,16 +101,68 @@ namespace ProjectControllers {
                 return BadRequest(error.Message);
             }
             catch (Exception error) {
-                return StatusCode(500);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
-        [HttpGet("/filter/{type}")]
+        [HttpGet("/count")]
+        public async Task<IActionResult> CountOrders() {
+            
+            try {
+                int count = await this._orderRepository.GetPageCount();
+                return Ok(count);
+            } catch (Exception error) {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("/filter/type/{type}")]
         public async Task<IActionResult> GetMatchingOrders(
-            string type
+            string type,
+            int page
         ) {
             try {
-                var orders = await this._orderRepository.FilterOrdersAsync(type);
+                var orders = await this._orderRepository.FilterOrdersAsync(type, page);
+                return Ok(orders);
+            }
+            catch (ArgumentException error) {
+                return BadRequest("Invalid order status choice.");
+            } 
+            catch {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("/filter/customer/{customer}")]
+        public async Task<IActionResult> GetMatchingCutomerOrders(
+            string customer,
+            int page
+        ) {
+            try {
+                var orders = await this._orderRepository.GetSpecificCustomerOrdersAsync(customer, page);
+                return Ok(orders);
+            }
+            catch (ArgumentException error) {
+                return BadRequest("Invalid order status choice.");
+            } 
+            catch {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        [HttpGet("/filter/type/customer/{type}/{customer}")]
+        public async Task<IActionResult> GetMatchingCutomeraAndTypeOrders(
+            string customer,
+            string type,
+            int page
+        ) {
+            try {
+                var orders = await this._orderRepository.GetSpecificCustomerAndTypeOrdersAsync(
+                    customer, 
+                    type, 
+                    page
+                );
+
                 return Ok(orders);
             }
             catch (ArgumentException error) {
