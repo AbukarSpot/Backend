@@ -62,8 +62,12 @@ namespace ProjectControllers {
 
         [HttpDelete("")]
         public async Task<IActionResult> RemoveOrder(
-            List<string> OrderIds
+            [FromBody] List<string> OrderIds
         ) {
+            Console.WriteLine($"ids: ");
+            foreach(string id in OrderIds) {
+                Console.WriteLine($"\t{id}");
+            }
             try {
                     await this._orderRepository.RemoveOrderAsync(OrderIds);
                     return Ok(200);
@@ -140,6 +144,10 @@ namespace ProjectControllers {
         ) {
             try {
                 var orders = await this._orderRepository.GetSpecificCustomerOrdersAsync(customer, page);
+                if (orders.Count() < 1) {
+                    return BadRequest($"{customer} is not registered as a customer.");
+                }
+
                 return Ok(orders);
             }
             catch (ArgumentException error) {
@@ -163,6 +171,10 @@ namespace ProjectControllers {
                     page
                 );
 
+                if (orders.Count() < 1) {
+                    return BadRequest($"{customer} is not registered as a customer.");
+                }
+                
                 return Ok(orders);
             }
             catch (ArgumentException error) {
