@@ -119,7 +119,6 @@ namespace ProjectControllers {
             try {
                 int count = 0;
                 if (request.criteria == OrderPaginagionCount.All) {
-                    Console.WriteLine("ALL");
                     count = await this._orderRepository.GetPageCount();
                 }
                 else if (request.criteria == OrderPaginagionCount.Type) {
@@ -140,7 +139,7 @@ namespace ProjectControllers {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        
+
         [HttpGet("/filter/type/{type}")]
         public async Task<IActionResult> GetMatchingOrders(
             string type,

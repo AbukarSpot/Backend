@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\adjama\\backend\\backend.csproj": {}
+    "c:\\Users\\adjama\\backend\\backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\adjama\\backend\\backend.csproj": {
+    "c:\\Users\\adjama\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\adjama\\backend\\backend.csproj",
+        "projectUniqueName": "c:\\Users\\adjama\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\Users\\adjama\\backend\\backend.csproj",
+        "projectPath": "c:\\Users\\adjama\\backend\\backend.csproj",
         "packagesPath": "C:\\Users\\adjama\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\adjama\\backend\\obj\\",
+        "outputPath": "c:\\Users\\adjama\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\adjama\\AppData\\Roaming\\NuGet\\NuGet.Config",
