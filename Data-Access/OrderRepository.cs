@@ -23,20 +23,6 @@ public class OrderRepository: IOrderRepository {
         return orderEnumValue.ToString();
     }
 
-    public async Task<int> GetPageCount() {
-        var rows = await (   from Order in this._context.Orders
-                            join Customers in this._context.Customer 
-                                on Order.CustomerId equals Customers.CustomerId
-                            join Users in this._context.User 
-                                on Order.UserId equals Users.UserId
-                            select 1
-                        )
-                        .ToListAsync();
-
-        int pageCount = rows.Count / this._rowsPerPage;
-        return pageCount;
-    }
-
     public async Task<IEnumerable<PublicModels.Order>> GetAllOrdersAsync(int pageNumber) {
         var allOrders = (   from Order in this._context.Orders
                             join Customers in this._context.Customer 
@@ -289,4 +275,79 @@ public class OrderRepository: IOrderRepository {
 
         return orders;
     } 
+
+    public async Task<int> GetPageCount() {
+        var rows = await (   from Order in this._context.Orders
+                            join Customers in this._context.Customer 
+                                on Order.CustomerId equals Customers.CustomerId
+                            join Users in this._context.User 
+                                on Order.UserId equals Users.UserId
+                            select 1
+                        )
+                        .ToListAsync();
+
+        int pageCount = ( rows.Count / this._rowsPerPage ) + 1;
+        return pageCount;
+    }
+
+    public async Task<int> GetPageTypeCount(OrderPaginationRequest request) {
+        if (request.type == null) {
+            throw new ArgumentNullException("Must provide a type name.");
+        }
+
+        int type = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), request.type);
+        var rows = await (   from Order in this._context.Orders
+                            join Customers in this._context.Customer 
+                                on Order.CustomerId equals Customers.CustomerId
+                            join Users in this._context.User 
+                                on Order.UserId equals Users.UserId
+                            where Order.OrderType == type
+                            select 1
+                        )
+                        .ToListAsync();
+
+        int pageCount = ( rows.Count / this._rowsPerPage ) + 1;
+        return pageCount;
+    }
+
+    public async Task<int> GetPageCustomerCount(OrderPaginationRequest request) {
+        if (request.customerName == null) {
+            throw new ArgumentNullException("Must provide a customer name.");
+        }
+
+        var rows = await (   from Order in this._context.Orders
+                            join Customers in this._context.Customer 
+                                on Order.CustomerId equals Customers.CustomerId
+                            join Users in this._context.User 
+                                on Order.UserId equals Users.UserId
+                            where Customers.Name == request.customerName
+                            select 1
+                        )
+                        .ToListAsync();
+
+        int pageCount = ( rows.Count / this._rowsPerPage ) + 1;
+        return pageCount;
+    }
+
+    public async Task<int> GetPageTypeAndCustomerCount(OrderPaginationRequest request) {
+        if (request.customerName == null || request.type == null) {
+            throw new ArgumentNullException("Must provide customer name and type.");
+        }
+        int type = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), request.type);
+        var rows = await (   from Order in this._context.Orders
+                            join Customers in this._context.Customer 
+                                on Order.CustomerId equals Customers.CustomerId
+                            join Users in this._context.User 
+                                on Order.UserId equals Users.UserId
+                            where 
+                                Customers.Name == request.customerName &&
+                                Order.OrderType == type
+                            select 1
+                        )
+                        .ToListAsync();
+
+        int pageCount = ( rows.Count / this._rowsPerPage ) + 1;
+        return pageCount;
+    }
+
 }

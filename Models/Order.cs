@@ -31,4 +31,18 @@ namespace ProjectModels {
         public string CustomerName { get; set; }
         public string Username { get; set; }
     }
+
+    public class OrderPaginationRequest {
+        public OrderPaginagionCount criteria { get; set; }
+        public string? customerName { get; set; }
+        public string? type { get; set; }
+    }
+
+    public enum OrderPaginagionCount {
+        [Display(Name = "")]
+        All = 0,
+        Type = 1,
+        Customer = 2,
+        CustomerAndType = 3
+    }
 }

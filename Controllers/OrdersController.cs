@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using DatabaseContex;
 using Microsoft.AspNetCore.Identity;
@@ -110,16 +111,36 @@ namespace ProjectControllers {
         }
 
         [HttpGet("/count")]
-        public async Task<IActionResult> CountOrders() {
+        public async Task<IActionResult> CountOrders(
+            [FromQuery] OrderPaginationRequest request
+        ) {
             
+
             try {
-                int count = await this._orderRepository.GetPageCount();
+                int count = 0;
+                if (request.criteria == OrderPaginagionCount.All) {
+                    Console.WriteLine("ALL");
+                    count = await this._orderRepository.GetPageCount();
+                }
+                else if (request.criteria == OrderPaginagionCount.Type) {
+                    count = await this._orderRepository.GetPageTypeCount(request);
+                }
+                else if (request.criteria == OrderPaginagionCount.Customer) {
+                    count = await this._orderRepository.GetPageCustomerCount(request);
+                }
+                else if (request.criteria == OrderPaginagionCount.CustomerAndType) {
+                    count = await this._orderRepository.GetPageTypeAndCustomerCount(request);
+                }
                 return Ok(count);
-            } catch (Exception error) {
+            } 
+            catch (ArgumentNullException error) {
+                return BadRequest(error.Message);
+            }
+            catch (Exception error) {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
+        
         [HttpGet("/filter/type/{type}")]
         public async Task<IActionResult> GetMatchingOrders(
             string type,
@@ -174,7 +195,7 @@ namespace ProjectControllers {
                 if (orders.Count() < 1) {
                     return BadRequest($"{customer} is not registered as a customer.");
                 }
-                
+
                 return Ok(orders);
             }
             catch (ArgumentException error) {
@@ -185,7 +206,6 @@ namespace ProjectControllers {
             }
         }
     }
-
 
     [Flags]
     public enum OrderTypes {

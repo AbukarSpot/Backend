@@ -1,7 +1,6 @@
 using ProjectModels;
 
 public interface IOrderRepository {
-    public Task<int> GetPageCount();
     public Task<IEnumerable<PublicModels.Order>> GetAllOrdersAsync(int page);
     public Task UpdateOrderAsync(
         string OrderId,
@@ -24,4 +23,8 @@ public interface IOrderRepository {
         string typeChoice, 
         int pageNumber
     );
+    public Task<int> GetPageCount();
+    public Task<int> GetPageTypeCount(OrderPaginationRequest request);
+    public Task<int> GetPageCustomerCount(OrderPaginationRequest request);
+    public Task<int> GetPageTypeAndCustomerCount(OrderPaginationRequest request);
 }
