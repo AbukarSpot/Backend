@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// "ProjectDb": "Server=sqlserverhostv.database.windows.net;Database=Project;Authentication=Sql Password;User ID=adminUsername;Password=adminPass1;TrustServerCertificate=True;"
 var  corsPolicy = "_allowedOriginsPolicy";
 string? connectionString = builder.Configuration.GetConnectionString("ProjectDb");
 if (connectionString == null) {
