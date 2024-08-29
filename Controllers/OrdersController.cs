@@ -77,9 +77,11 @@ namespace ProjectControllers {
             }
         }
         
-        [HttpGet("")]
+        [HttpGet("{pageNumber}")]
         public async Task<IActionResult> GetAllOrders(int pageNumber) {
             try {
+                Console.WriteLine($"Parsing page: {pageNumber}");
+                pageNumber -= 1;
                 var allOrders = await this._orderRepository.GetAllOrdersAsync(pageNumber);
                 return Ok(allOrders);
             } 
@@ -110,12 +112,12 @@ namespace ProjectControllers {
             }
         }
 
-        [HttpGet("/count")]
+        [HttpGet("count")]
         public async Task<IActionResult> CountOrders(
             [FromQuery] OrderPaginationRequest request
         ) {
             
-
+            Console.WriteLine($"criteria: {request.criteria}");
             try {
                 int count = 0;
                 if (request.criteria == OrderPaginagionCount.All) {
@@ -140,12 +142,13 @@ namespace ProjectControllers {
             }
         }
 
-        [HttpGet("/filter/type/{type}")]
+        [HttpGet("/filter/type/{type}/{page}")]
         public async Task<IActionResult> GetMatchingOrders(
             string type,
             int page
         ) {
             try {
+                page -= 1;
                 var orders = await this._orderRepository.FilterOrdersAsync(type, page);
                 return Ok(orders);
             }
@@ -157,12 +160,13 @@ namespace ProjectControllers {
             }
         }
 
-        [HttpGet("/filter/customer/{customer}")]
+        [HttpGet("/filter/customer/{customer}/{page}")]
         public async Task<IActionResult> GetMatchingCutomerOrders(
             string customer,
             int page
         ) {
             try {
+                page -= 1;
                 var orders = await this._orderRepository.GetSpecificCustomerOrdersAsync(customer, page);
                 if (orders.Count() < 1) {
                     return BadRequest($"{customer} is not registered as a customer.");
@@ -178,13 +182,14 @@ namespace ProjectControllers {
             }
         }
 
-        [HttpGet("/filter/type/customer/{type}/{customer}")]
+        [HttpGet("/filter/type/customer/{type}/{customer}/{page}")]
         public async Task<IActionResult> GetMatchingCutomeraAndTypeOrders(
             string customer,
             string type,
             int page
         ) {
             try {
+                page -= 1;
                 var orders = await this._orderRepository.GetSpecificCustomerAndTypeOrdersAsync(
                     customer, 
                     type, 
