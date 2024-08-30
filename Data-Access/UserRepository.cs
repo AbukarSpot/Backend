@@ -1,4 +1,5 @@
 
+using System.Data;
 using DatabaseContex;
 using Microsoft.EntityFrameworkCore;
 using ProjectModels;
@@ -15,7 +16,7 @@ public class UserRepository: IUserRepository {
                                 .User
                                 .SingleOrDefaultAsync(User => User.Username == payload.Username);
         if (user is not null) {
-            throw new InvalidOperationException($"{user.Username} already exists.");
+            throw new DuplicateNameException($"{user.Username} already exists.");
         }
 
         this._context.Add(payload);

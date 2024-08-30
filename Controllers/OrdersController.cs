@@ -42,23 +42,15 @@ namespace ProjectControllers {
                 return BadRequest("Invalid Order Type.");
             }
 
-            try {
-                await this._orderRepository.UpdateOrderAsync(
-                    orderId,
-                    CreatedDate,
-                    Username,
-                    OrderType,
-                    CustomerName
-                );
+            await this._orderRepository.UpdateOrderAsync(
+                orderId,
+                CreatedDate,
+                Username,
+                OrderType,
+                CustomerName
+            );
 
-                return Ok();                    
-            } 
-            catch (InvalidOperationException error) {
-                return BadRequest(error.Message);
-            }
-            catch (Exception error) {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok();
         }
 
         [HttpDelete("")]
@@ -69,25 +61,17 @@ namespace ProjectControllers {
             foreach(string id in OrderIds) {
                 Console.WriteLine($"\t{id}");
             }
-            try {
-                    await this._orderRepository.RemoveOrderAsync(OrderIds);
-                    return Ok(200);
-            } catch (Exception error) {
-                return StatusCode(500);
-            }
+            
+            await this._orderRepository.RemoveOrderAsync(OrderIds);
+            return Ok(200);
         }
         
         [HttpGet("{pageNumber}")]
         public async Task<IActionResult> GetAllOrders(int pageNumber) {
-            try {
-                Console.WriteLine($"Parsing page: {pageNumber}");
-                pageNumber -= 1;
-                var allOrders = await this._orderRepository.GetAllOrdersAsync(pageNumber);
-                return Ok(allOrders);
-            } 
-            catch (Exception error) {
-                return StatusCode(500);
-            }
+            Console.WriteLine($"Parsing page: {pageNumber}");
+            pageNumber -= 1;
+            var allOrders = await this._orderRepository.GetAllOrdersAsync(pageNumber);
+            return Ok(allOrders);
         }
 
         
@@ -96,20 +80,12 @@ namespace ProjectControllers {
             OrderRequest request
         ) 
         {
-            try {
-                await this._orderRepository.CreateOrderAsync(
-                    request.Type,
-                    request.CustomerName,
-                    request.Username
-                );
-                return Ok();
-            }
-            catch (InvalidOperationException error) {
-                return BadRequest(error.Message);
-            }
-            catch (Exception error) {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            await this._orderRepository.CreateOrderAsync(
+                request.Type,
+                request.CustomerName,
+                request.Username
+            );
+            return Ok();
         }
 
         [HttpGet("count")]
@@ -118,28 +94,20 @@ namespace ProjectControllers {
         ) {
             
             Console.WriteLine($"criteria: {request.criteria}");
-            try {
-                int count = 0;
-                if (request.criteria == OrderPaginagionCount.All) {
-                    count = await this._orderRepository.GetPageCount();
-                }
-                else if (request.criteria == OrderPaginagionCount.Type) {
-                    count = await this._orderRepository.GetPageTypeCount(request);
-                }
-                else if (request.criteria == OrderPaginagionCount.Customer) {
-                    count = await this._orderRepository.GetPageCustomerCount(request);
-                }
-                else if (request.criteria == OrderPaginagionCount.CustomerAndType) {
-                    count = await this._orderRepository.GetPageTypeAndCustomerCount(request);
-                }
-                return Ok(count);
-            } 
-            catch (ArgumentNullException error) {
-                return BadRequest(error.Message);
+            int count = 0;
+            if (request.criteria == OrderPaginagionCount.All) {
+                count = await this._orderRepository.GetPageCount();
             }
-            catch (Exception error) {
-                return StatusCode(StatusCodes.Status500InternalServerError);
+            else if (request.criteria == OrderPaginagionCount.Type) {
+                count = await this._orderRepository.GetPageTypeCount(request);
             }
+            else if (request.criteria == OrderPaginagionCount.Customer) {
+                count = await this._orderRepository.GetPageCustomerCount(request);
+            }
+            else if (request.criteria == OrderPaginagionCount.CustomerAndType) {
+                count = await this._orderRepository.GetPageTypeAndCustomerCount(request);
+            }
+            return Ok(count);
         }
 
         [HttpGet("/filter/type/{type}/{page}")]
@@ -147,17 +115,9 @@ namespace ProjectControllers {
             string type,
             int page
         ) {
-            try {
-                page -= 1;
-                var orders = await this._orderRepository.FilterOrdersAsync(type, page);
-                return Ok(orders);
-            }
-            catch (ArgumentException error) {
-                return BadRequest("Invalid order status choice.");
-            } 
-            catch {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            page -= 1;
+            var orders = await this._orderRepository.FilterOrdersAsync(type, page);
+            return Ok(orders);
         }
 
         [HttpGet("/filter/customer/{customer}/{page}")]
@@ -176,9 +136,6 @@ namespace ProjectControllers {
             }
             catch (ArgumentException error) {
                 return BadRequest("Invalid order status choice.");
-            } 
-            catch {
-                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
 
@@ -188,26 +145,18 @@ namespace ProjectControllers {
             string type,
             int page
         ) {
-            try {
-                page -= 1;
-                var orders = await this._orderRepository.GetSpecificCustomerAndTypeOrdersAsync(
-                    customer, 
-                    type, 
-                    page
-                );
+            page -= 1;
+            var orders = await this._orderRepository.GetSpecificCustomerAndTypeOrdersAsync(
+                customer, 
+                type, 
+                page
+            );
 
-                if (orders.Count() < 1) {
-                    return BadRequest($"{customer} is not registered as a customer.");
-                }
+            if (orders.Count() < 1) {
+                return BadRequest($"{customer} is not registered as a customer.");
+            }
 
-                return Ok(orders);
-            }
-            catch (ArgumentException error) {
-                return BadRequest("Invalid order status choice.");
-            } 
-            catch {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
+            return Ok(orders);
         }
     }
 

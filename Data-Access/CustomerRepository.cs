@@ -1,3 +1,4 @@
+using System.Data;
 using DatabaseContex;
 using Microsoft.EntityFrameworkCore;
 using ProjectModels;
@@ -15,7 +16,7 @@ public class CustomerRepository : ICustomerRepository
     {
         var customer = await this._context.Customer.SingleOrDefaultAsync(c => c.Name == payload.Name);
         if(customer is not null) {
-            throw new InvalidOperationException($"{payload.Name} already exists.");
+            throw new DuplicateNameException($"{payload.Name} already exists.");
         }
         this._context.Customer.Add(payload);
         await this._context.SaveChangesAsync();

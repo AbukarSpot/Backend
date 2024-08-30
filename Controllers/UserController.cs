@@ -21,31 +21,20 @@ namespace ProjectControllers {
             string? Password
         ) 
         {
-            
-            try {
-                    await this._userRepository.AddUserAsync(new User {
-                        UserId = Guid.NewGuid().ToString(),
-                        Username = Username,
-                        Password = Password
-                    });
+            await this._userRepository.AddUserAsync(new User {
+                UserId = Guid.NewGuid().ToString(),
+                Username = Username,
+                Password = Password
+            });
 
-                    return Ok(); 
-                }
-            catch (InvalidOperationException error) {
-                return new ObjectResult(error.Message) { StatusCode = StatusCodes.Status208AlreadyReported };
-            } 
+            return Ok(); 
         }
 
         [HttpGet("")]
         public async Task<IActionResult> GetAllCustomers() 
         { 
-            try {
-                var users = await this._userRepository.GetAllUsersAsync();
-                return Ok(users);
-            } 
-            catch (Exception error) {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            } 
+            var users = await this._userRepository.GetAllUsersAsync();
+            return Ok(users);
         } 
     }
 }

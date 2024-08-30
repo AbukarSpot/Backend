@@ -167,7 +167,14 @@ public class OrderRepository: IOrderRepository {
     }
 
     public async Task<IEnumerable<PublicModels.Order>> FilterOrdersAsync(string Type, int pageNumber) {
-        int type = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), Type);
+        int type;
+        try {
+            type = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), Type);
+        } 
+        catch (ArgumentException error) {
+            throw new ArgumentException("Invalid order status choice.");
+        }
+
         var orders = (
             from Order in this._context.Orders
             join Customers in this._context.Customer 
@@ -241,7 +248,13 @@ public class OrderRepository: IOrderRepository {
         string typeChoice, 
         int pageNumber 
     ) {
-        int type = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), typeChoice);
+        int type;
+        try { 
+            type = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), typeChoice);
+        } catch (ArgumentException error) {
+            throw new ArgumentException("Invalid order status choice.");
+        }
+        
         var orders = (
             from Order in this._context.Orders
             join Customers in this._context.Customer 

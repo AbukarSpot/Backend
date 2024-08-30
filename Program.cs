@@ -1,4 +1,5 @@
 using DatabaseContex;
+using ExceptionHandlers;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // "ProjectDb": "Server=sqlserverhostv.database.windows.net;Database=Project;Authentication=Sql Password;User ID=adminUsername;Password=adminPass1;TrustServerCertificate=True;"
 var  corsPolicy = "_allowedOriginsPolicy";
 string? connectionString = builder.Configuration.GetConnectionString("ProjectDb");
+// string? connectionString = "";
 if (connectionString == null) {
     throw new ArgumentException("Must provide a connection string in appsettings.json");
 }
@@ -15,7 +17,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ProjectContext>(
-    options => options.UseSqlServer(connectionString)
+    options => options.UseSqlServer(
+        connectionString: connectionString,
+        sqlServerOptionsAction: providerOptions => {
+            providerOptions.EnableRetryOnFailure(1);
+        }
+    )
 );
 
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -43,6 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandler>();
 app.UseCors(corsPolicy);
 app.UseAuthorization();
 app.UseHttpsRedirection();
