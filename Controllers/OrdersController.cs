@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using ProjectModels;
+using PublicModels;
 
 /*
     server: sqlserverhostv.database.windows.net
@@ -27,27 +28,23 @@ namespace ProjectControllers {
             this._orderRepository = orderRepository;
         }
 
-        [HttpPatch("/{orderId}")]
+        [HttpPatch("")]
         public async Task<IActionResult> UpdateOrder(
-            string orderId,
-            DateTime CreatedDate,
-            string Username,
-            string OrderType,
-            string CustomerName
+            [FromQuery] UpdateOrderRequest request 
         ) {
 
-            Object orderTypeChoice = OrderType;
+            Object orderTypeChoice = request.orderType;
             bool invalidOrderType = Enum.IsDefined(typeof(OrderTypes), orderTypeChoice) == false;
             if (invalidOrderType) {
                 return BadRequest("Invalid Order Type.");
             }
 
             await this._orderRepository.UpdateOrderAsync(
-                orderId,
-                CreatedDate,
-                Username,
-                OrderType,
-                CustomerName
+                request.orderId,
+                request.createdDate,
+                request.username,
+                request.orderType,
+                request.customerName
             );
 
             return Ok();

@@ -5,6 +5,7 @@ using DatabaseContex;
 using Microsoft.EntityFrameworkCore;
 using ProjectControllers;
 using ProjectModels;
+using PublicModels;
 
 public class OrderRepository: IOrderRepository {
 
@@ -75,11 +76,11 @@ public class OrderRepository: IOrderRepository {
         }
 
 
-        Customer? customerEntry = await this._context
+        ProjectModels.Customer? customerEntry = await this._context
                                         .Customer
                                         .SingleOrDefaultAsync(x => x.Name == CustomerName);
         
-        User? userEntry = await this._context
+        ProjectModels.User? userEntry = await this._context
                                 .User
                                 .SingleOrDefaultAsync(x => x.Username == Username);
         
@@ -96,7 +97,15 @@ public class OrderRepository: IOrderRepository {
         entry.UserId = userEntry.UserId;
         int orderType = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), OrderType.ToString());
         entry.OrderType = orderType;
-        entry.CreatedDate = CreatedDate;
+        entry.CreatedDate = CreatedDate;        
+        // Orders newOrder = new Orders() {
+        //     Id = entry.Id,
+        //     CustomerId = customerEntry.CustomerId,
+        //     UserId = userEntry.UserId,
+        //     OrderType = entry.OrderType,
+        //     CreatedDate = CreatedDate
+        // };
+        this._context.Update(entry);
         await this._context.SaveChangesAsync();
     }
     
@@ -127,8 +136,8 @@ public class OrderRepository: IOrderRepository {
         Enum.TryParse(Type, out orderTypeOption);
         int orderTypeValue = (int) orderTypeOption;
 
-        User user = await this.GetUser(Username);
-        Customer customer = await this.GetCustomer(CustomerName);
+        ProjectModels.User user = await this.GetUser(Username);
+        ProjectModels.Customer customer = await this.GetCustomer(CustomerName);
 
         this._context.Orders.Add(new Orders {
             Id = guid.ToString(),
@@ -140,8 +149,8 @@ public class OrderRepository: IOrderRepository {
         await this._context.SaveChangesAsync();
     }
 
-    private async Task<User> GetUser(string Username) {
-        User? user = await this._context
+    private async Task<ProjectModels.User> GetUser(string Username) {
+        ProjectModels.User? user = await this._context
                                 .User
                                 .SingleOrDefaultAsync(User => User.Username == Username);
         
@@ -152,9 +161,9 @@ public class OrderRepository: IOrderRepository {
         return user;
     }
 
-    private async Task<Customer> GetCustomer(string CustomerName) {
+    private async Task<ProjectModels.Customer> GetCustomer(string CustomerName) {
             
-        Customer? customer = await this._context
+        ProjectModels.Customer? customer = await this._context
                                 .Customer
                                 .SingleOrDefaultAsync(Customer => Customer.Name == CustomerName);
         

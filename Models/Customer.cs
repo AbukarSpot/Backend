@@ -8,7 +8,7 @@ namespace ProjectModels {
     public class Customer {
         [Key]
         [Column(TypeName = "varchar(36)")]
-        public string CustomerId { get; set; }
+        public string CustomerId { get; set; } = "";
 
         [Required]
         [Column(TypeName = "varchar(36)")]

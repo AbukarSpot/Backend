@@ -24,4 +24,12 @@ namespace PublicModels {
         }
     }
 
+    public class UpdateOrderRequest {
+        public string orderId { get; set; }
+        public DateTime createdDate { get; set; }
+        public string username { get; set; }
+        public string orderType { get; set; }
+        public string customerName { get; set; }
+    }
+
 }
