@@ -41,6 +41,7 @@ public class OrderRepository: IOrderRepository {
                         .AsEnumerable()
                         .Skip(this._rowsPerPage * pageNumber)
                         .Take(this._rowsPerPage)
+                        .OrderByDescending(order => order.CreatedDate)
                         .Select(order => {
                             string orderType = this.GetOrderType(order.OrderType);
                             return  new PublicModels.Order(
@@ -93,31 +94,25 @@ public class OrderRepository: IOrderRepository {
             throw new InvalidOperationException("User does not exist.");
         }
 
-        // entry.CustomerId = customerEntry.CustomerId;
-        // entry.UserId = userEntry.UserId;
+        entry.CustomerId = customerEntry.CustomerId;
+        entry.UserId = userEntry.UserId;
         int orderType = (int) (OrderTypes) Enum.Parse(typeof(OrderTypes), OrderType.ToString());
-        // entry.OrderType = orderType;
-        // entry.CreatedDate = CreatedDate;        
-        // Orders newOrder = new Orders() {
-        //     Id = entry.Id,
-        //     CustomerId = customerEntry.CustomerId,
-        //     UserId = userEntry.UserId,
-        //     OrderType = entry.OrderType,
-        //     CreatedDate = CreatedDate
-        // };
-        int rowsUpdated = this._context
-                                .Orders
-                                .Where(order => order.Id == OrderId)
-                                .ExecuteUpdate(
-                                    setter => setter
-                                                .SetProperty(o => o.CustomerId, customerEntry.CustomerId)
-                                                .SetProperty(o => o.UserId, userEntry.UserId)
-                                                .SetProperty(o => o.OrderType,orderType)
-                                                .SetProperty(o => o.CreatedDate, CreatedDate)
-                                );
-        if (rowsUpdated < 1) {
-            throw new InvalidOperationException("Updated 0 rows.");
-        } 
+        entry.OrderType = orderType;
+        entry.CreatedDate = CreatedDate;        
+        
+        // int rowsUpdated = this._context
+        //                         .Orders
+        //                         .Where(order => order.Id == OrderId)
+        //                         .ExecuteUpdate(
+        //                             setter => setter
+        //                                         .SetProperty(o => o.CustomerId, customerEntry.CustomerId)
+        //                                         .SetProperty(o => o.UserId, userEntry.UserId)
+        //                                         .SetProperty(o => o.OrderType,orderType)
+        //                                         .SetProperty(o => o.CreatedDate, CreatedDate)
+        //                         );
+        // if (rowsUpdated < 1) {
+        //     throw new InvalidOperationException("Updated 0 rows.");
+        // } 
         await this._context.SaveChangesAsync();
     }
     
