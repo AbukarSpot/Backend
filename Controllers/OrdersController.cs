@@ -47,7 +47,7 @@ namespace ProjectControllers {
                 request.customerName
             );
 
-            return Ok();
+            return Ok("Order updated.");
         }
 
         [HttpDelete("")]

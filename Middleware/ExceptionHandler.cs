@@ -20,8 +20,7 @@ namespace ExceptionHandlers {
                     code = HttpStatusCode.BadRequest;
                     break;
                 case (
-                    SqlException or
-                    
+                    SqlException
                 ):
                     code = HttpStatusCode.InternalServerError;
                     errorMsg = "Unable to connect to database at this time.";
