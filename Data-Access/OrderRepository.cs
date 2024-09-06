@@ -126,6 +126,23 @@ public class OrderRepository: IOrderRepository {
         await this._context.SaveChangesAsync();
     }
 
+    public async Task CreateMultipleOrdersAsync(
+        List<OrderRequest> requests
+    ) {
+        var tasks = new List<Task>();
+        requests.ForEach(req => {
+            var addOpp = this.CreateOrderAsync(
+                    req.Type,
+                    req.CustomerName,
+                    req.Username
+            );
+
+            // Efcore does not allow more than 1 
+            // concurent thread to use a dbcontext
+            addOpp.Wait();
+        });
+    }
+
     public async Task CreateOrderAsync(
         string Type,
         string CustomerName,

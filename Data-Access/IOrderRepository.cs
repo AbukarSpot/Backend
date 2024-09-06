@@ -27,4 +27,7 @@ public interface IOrderRepository {
     public Task<int> GetPageTypeCount(OrderPaginationRequest request);
     public Task<int> GetPageCustomerCount(OrderPaginationRequest request);
     public Task<int> GetPageTypeAndCustomerCount(OrderPaginationRequest request);
+    public Task CreateMultipleOrdersAsync(
+        List<OrderRequest> requests
+    );
 }

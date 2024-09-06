@@ -72,6 +72,15 @@ namespace ProjectControllers {
         }
 
         
+        [HttpPost("bulk")]
+        public async Task<IActionResult> CreateOrder(
+            [FromBody] List<OrderRequest> requests
+        ) 
+        {
+            await this._orderRepository.CreateMultipleOrdersAsync(requests);
+            return Ok();
+        }
+
         [HttpPost("")]
         public async Task<IActionResult> CreateOrder(
             OrderRequest request

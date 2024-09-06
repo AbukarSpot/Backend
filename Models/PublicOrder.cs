@@ -17,7 +17,7 @@ namespace PublicModels {
             string Customer
         ) {
             this.Id = Id;
-            this.Date = Date.ToString("MMMM dd-yyyy");
+            this.Date = Date.ToString("MMM dd-yyyy");
             this.By = By;
             this.Type = Type;
             this.Customer = Customer;
