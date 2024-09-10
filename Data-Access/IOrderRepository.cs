@@ -35,4 +35,9 @@ public interface IOrderRepository {
         string startDate,
         string stopDate
     );
+
+    public Task<List<OrderDistributionResult>> GetOrdersDistributionByDateAsync(
+        string startDate,
+        string stopDate
+    );
 }

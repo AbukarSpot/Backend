@@ -3258,30 +3258,34 @@
     "net8.0": [
       "Microsoft.AspNetCore.OpenApi >= 8.0.7",
       "Microsoft.EntityFrameworkCore >= 8.0.7",
+      "Microsoft.EntityFrameworkCore.Relational >= 8.0.7",
       "Microsoft.EntityFrameworkCore.SqlServer >= 8.0.7",
       "Newtonsoft.Json >= 13.0.3",
       "Swashbuckle.AspNetCore >= 6.7.0"
     ]
   },
   "packageFolders": {
-    "/Users/abukar/.nuget/packages/": {}
+    "C:\\Users\\adjama\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/abukar/Desktop/spot/Backend/backend.csproj",
+      "projectUniqueName": "C:\\Users\\adjama\\backend\\backend.csproj",
       "projectName": "backend",
-      "projectPath": "/Users/abukar/Desktop/spot/Backend/backend.csproj",
-      "packagesPath": "/Users/abukar/.nuget/packages/",
-      "outputPath": "/Users/abukar/Desktop/spot/Backend/obj/",
+      "projectPath": "C:\\Users\\adjama\\backend\\backend.csproj",
+      "packagesPath": "C:\\Users\\adjama\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\adjama\\backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/abukar/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\adjama\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3294,6 +3298,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -3305,6 +3314,10 @@
             "version": "[8.0.7, )"
           },
           "Microsoft.EntityFrameworkCore": {
+            "target": "Package",
+            "version": "[8.0.7, )"
+          },
+          "Microsoft.EntityFrameworkCore.Relational": {
             "target": "Package",
             "version": "[8.0.7, )"
           },
@@ -3340,7 +3353,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

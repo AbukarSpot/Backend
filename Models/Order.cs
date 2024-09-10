@@ -43,14 +43,20 @@ namespace ProjectModels {
     }
 
     public class OrderFreqResult {
-        public string DateOf { get; set; }
+        public string? DateOf { get; set; }
+        public string Type { get; set; }
+        public int OrderCount { get; set; }
+    }
+
+    public class OrderDistributionResult {
+        public string? DateOf { get; set; }
         public string Type { get; set; }
         public int OrderCount { get; set; }
     }
 
     public class OrderAnalyticsRequest {
-        public string startDate {get; set;}
-        public string stopDate {get; set;}
+        public string startDate {get; set;} = String.Empty;
+        public string stopDate {get; set;} = String.Empty;
     }
     public enum OrderPaginagionCount {
         [Display(Name = "")]

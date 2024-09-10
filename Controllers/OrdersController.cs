@@ -167,12 +167,25 @@ namespace ProjectControllers {
             [FromBody] OrderAnalyticsRequest request
         ) {
             
-            var freq = this._orderRepository.GetOrdersFrequencyByDateAsync(
+            var freq = await this._orderRepository.GetOrdersFrequencyByDateAsync(
                 request.startDate,
                 request.stopDate
             );
 
             return Ok(freq);
+        }
+
+        [HttpPost("analytics/distribution")]
+        public async Task<IActionResult> GetOrdersDistribution(
+            [FromBody] OrderAnalyticsRequest request
+        ) {
+            
+            var distribution = await this._orderRepository.GetOrdersDistributionByDateAsync(
+                request.startDate,
+                request.stopDate
+            );
+
+            return Ok(distribution);
         }
     }
 

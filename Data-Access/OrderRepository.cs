@@ -3,6 +3,8 @@ using System.Reflection.Metadata;
 using System.Reflection.Metadata.Ecma335;
 using DatabaseContex;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Data.SqlClient;
 using ProjectControllers;
 using ProjectModels;
 using PublicModels;
@@ -24,34 +26,64 @@ public class OrderRepository: IOrderRepository {
         return orderEnumValue.ToString();
     }
 
+    public async Task<List<OrderDistributionResult>> GetOrdersDistributionByDateAsync(
+        string startDate,
+        string stopDate
+    ) {
+        DateTime t1 = DateTime.Parse(startDate);
+        DateTime t2 = DateTime.Parse(stopDate);
+
+        // Context is out of sync, wrote raw sql
+        var payload = await _context
+                            .Orders
+                            .Where(order => (
+                                order.CreatedDate >= t1 && 
+                                order.CreatedDate <= t2
+                            ))
+                            .ToListAsync();
+        
+        Dictionary<int, List<bool>> distributionMap = new Dictionary<int, List<bool>>(); 
+        payload
+            .ForEach(order => {
+                Console.WriteLine($"Type: {this.GetOrderType(order.OrderType)}");
+                if (distributionMap.ContainsKey(order.OrderType)) {
+                    distributionMap[order.OrderType].Add(true);
+                } else {
+                    distributionMap[order.OrderType] = new List<bool>() { true };
+                }
+            });
+        
+        return distributionMap.Select(e => new OrderDistributionResult() {
+            Type = this.GetOrderType(e.Key),
+            OrderCount = e.Value.Count()
+        }).ToList();
+
+        // return orderDistribution;
+    }
+
     public async Task<List<OrderFreqResult>> GetOrdersFrequencyByDateAsync(
         string startDate,
         string stopDate
     ) {
         DateTime t1 = DateTime.Parse(startDate);
-        DateTime t2 = DateTime.Parse(startDate);
+        DateTime t2 = DateTime.Parse(stopDate);
 
-        var orderFreq = await (
-            from Order in this._context.Orders
-            where (
-                Order.CreatedDate > t1 &&
-                Order.CreatedDate < t2
-            )
-            group Order by Order.CreatedDate into day
-            select new {
-                OrderCount = day.Count(),
-                DateOf = day.Single().CreatedDate,
-                Type = day.Single().OrderType
-            }
-        )
-        .Select(order => new OrderFreqResult() {
-            DateOf = order.DateOf.ToString("MMM dd-yyyy"),
-            Type = order.Type.ToString(),
-            OrderCount = order.OrderCount
+        var payload = await _context.Orders.Select(order => new {
+            order.CreatedDate,
+            order.OrderType
         })
+        .Where(day => day.CreatedDate >= t1 && day.CreatedDate <= t2)
         .ToListAsync();
+        
+        var orderFreq = payload
+                            .GroupBy(order => order.CreatedDate.ToString("MM-dd-yyyy"))
+                            .ToDictionary(key => key.Key, value => new OrderFreqResult {
+                                OrderCount = value.Count(),
+                                DateOf = value.FirstOrDefault()?.CreatedDate.ToString("MM-dd-yyyy")
+                            })
+                            .ToList();
 
-        return orderFreq;
+        return orderFreq.Select(e => e.Value).ToList();
     }
     public async Task<IEnumerable<PublicModels.Order>> GetAllOrdersAsync(int pageNumber) {
         var allOrders = (   from Order in this._context.Orders
