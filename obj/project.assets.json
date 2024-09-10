@@ -3264,27 +3264,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\adjama\\.nuget\\packages\\": {}
+    "/Users/abukar/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\adjama\\backend\\backend.csproj",
+      "projectUniqueName": "/Users/abukar/Desktop/spot/Backend/backend.csproj",
       "projectName": "backend",
-      "projectPath": "C:\\Users\\adjama\\backend\\backend.csproj",
-      "packagesPath": "C:\\Users\\adjama\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\adjama\\backend\\obj\\",
+      "projectPath": "/Users/abukar/Desktop/spot/Backend/backend.csproj",
+      "packagesPath": "/Users/abukar/.nuget/packages/",
+      "outputPath": "/Users/abukar/Desktop/spot/Backend/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\adjama\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/abukar/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3297,11 +3294,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -3348,7 +3340,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.304/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.101/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

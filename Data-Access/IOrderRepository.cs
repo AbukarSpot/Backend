@@ -30,4 +30,9 @@ public interface IOrderRepository {
     public Task CreateMultipleOrdersAsync(
         List<OrderRequest> requests
     );
+
+    public Task<List<OrderFreqResult>> GetOrdersFrequencyByDateAsync(
+        string startDate,
+        string stopDate
+    );
 }

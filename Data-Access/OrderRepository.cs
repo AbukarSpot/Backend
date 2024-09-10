@@ -24,6 +24,35 @@ public class OrderRepository: IOrderRepository {
         return orderEnumValue.ToString();
     }
 
+    public async Task<List<OrderFreqResult>> GetOrdersFrequencyByDateAsync(
+        string startDate,
+        string stopDate
+    ) {
+        DateTime t1 = DateTime.Parse(startDate);
+        DateTime t2 = DateTime.Parse(startDate);
+
+        var orderFreq = await (
+            from Order in this._context.Orders
+            where (
+                Order.CreatedDate > t1 &&
+                Order.CreatedDate < t2
+            )
+            group Order by Order.CreatedDate into day
+            select new {
+                OrderCount = day.Count(),
+                DateOf = day.Single().CreatedDate,
+                Type = day.Single().OrderType
+            }
+        )
+        .Select(order => new OrderFreqResult() {
+            DateOf = order.DateOf.ToString("MMM dd-yyyy"),
+            Type = order.Type.ToString(),
+            OrderCount = order.OrderCount
+        })
+        .ToListAsync();
+
+        return orderFreq;
+    }
     public async Task<IEnumerable<PublicModels.Order>> GetAllOrdersAsync(int pageNumber) {
         var allOrders = (   from Order in this._context.Orders
                             join Customers in this._context.Customer 
@@ -129,17 +158,12 @@ public class OrderRepository: IOrderRepository {
     public async Task CreateMultipleOrdersAsync(
         List<OrderRequest> requests
     ) {
-        var tasks = new List<Task>();
-        requests.ForEach(req => {
-            var addOpp = this.CreateOrderAsync(
-                    req.Type,
-                    req.CustomerName,
-                    req.Username
-            );
-
-            // Efcore does not allow more than 1 
-            // concurent thread to use a dbcontext
-            addOpp.Wait();
+        requests.ForEach((req) => {
+            this.CreateOrderAsync(
+                req.type,
+                req.customerName,
+                req.username
+            ).Wait();
         });
     }
 

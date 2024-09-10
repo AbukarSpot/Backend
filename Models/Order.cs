@@ -27,9 +27,13 @@ namespace ProjectModels {
     }
 
     public class OrderRequest {
-        public string Type { get; set; }
-        public string CustomerName { get; set; }
-        public string Username { get; set; }
+        public string type { get; set; } = String.Empty;
+        public string customerName { get; set; } = String.Empty;
+        public string username { get; set; } = String.Empty;
+    }
+
+    public class BulkOrder {
+        public List<OrderRequest>? Orders { get; set; }
     }
 
     public class OrderPaginationRequest {
@@ -38,6 +42,16 @@ namespace ProjectModels {
         public string? type { get; set; }
     }
 
+    public class OrderFreqResult {
+        public string DateOf { get; set; }
+        public string Type { get; set; }
+        public int OrderCount { get; set; }
+    }
+
+    public class OrderAnalyticsRequest {
+        public string startDate {get; set;}
+        public string stopDate {get; set;}
+    }
     public enum OrderPaginagionCount {
         [Display(Name = "")]
         All = 0,

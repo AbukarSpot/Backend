@@ -53,12 +53,7 @@ namespace ProjectControllers {
         [HttpDelete("")]
         public async Task<IActionResult> RemoveOrder(
             [FromBody] List<string> OrderIds
-        ) {
-            Console.WriteLine($"ids: ");
-            foreach(string id in OrderIds) {
-                Console.WriteLine($"\t{id}");
-            }
-            
+        ) {            
             await this._orderRepository.RemoveOrderAsync(OrderIds);
             return Ok(200);
         }
@@ -71,13 +66,15 @@ namespace ProjectControllers {
             return Ok(allOrders);
         }
 
-        
         [HttpPost("bulk")]
         public async Task<IActionResult> CreateOrder(
-            [FromBody] List<OrderRequest> requests
+            [FromBody] BulkOrder BulkRequest
         ) 
         {
-            await this._orderRepository.CreateMultipleOrdersAsync(requests);
+            if (BulkRequest.Orders is null) {
+                return BadRequest("Must provide orders.");
+            }
+            await this._orderRepository.CreateMultipleOrdersAsync(BulkRequest.Orders);
             return Ok();
         }
 
@@ -87,9 +84,9 @@ namespace ProjectControllers {
         ) 
         {
             await this._orderRepository.CreateOrderAsync(
-                request.Type,
-                request.CustomerName,
-                request.Username
+                request.type,
+                request.customerName,
+                request.username
             );
             return Ok();
         }
@@ -163,6 +160,19 @@ namespace ProjectControllers {
             }
 
             return Ok(orders);
+        }
+
+        [HttpPost("analytics/frequency")]
+        public async Task<IActionResult> GetOrdersFrequency(
+            [FromBody] OrderAnalyticsRequest request
+        ) {
+            
+            var freq = this._orderRepository.GetOrdersFrequencyByDateAsync(
+                request.startDate,
+                request.stopDate
+            );
+
+            return Ok(freq);
         }
     }
 
