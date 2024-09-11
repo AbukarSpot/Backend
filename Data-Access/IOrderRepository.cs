@@ -1,4 +1,5 @@
 using ProjectModels;
+using PublicModels;
 
 public interface IOrderRepository {
     public Task<IEnumerable<PublicModels.Order>> GetAllOrdersAsync(int page);

@@ -45,7 +45,6 @@ public class OrderRepository: IOrderRepository {
         Dictionary<int, List<bool>> distributionMap = new Dictionary<int, List<bool>>(); 
         payload
             .ForEach(order => {
-                Console.WriteLine($"Type: {this.GetOrderType(order.OrderType)}");
                 if (distributionMap.ContainsKey(order.OrderType)) {
                     distributionMap[order.OrderType].Add(true);
                 } else {

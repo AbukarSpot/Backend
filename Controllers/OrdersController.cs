@@ -60,7 +60,6 @@ namespace ProjectControllers {
         
         [HttpGet("{pageNumber}")]
         public async Task<IActionResult> GetAllOrders(int pageNumber) {
-            Console.WriteLine($"Parsing page: {pageNumber}");
             pageNumber -= 1;
             var allOrders = await this._orderRepository.GetAllOrdersAsync(pageNumber);
             return Ok(allOrders);
@@ -96,7 +95,6 @@ namespace ProjectControllers {
             [FromQuery] OrderPaginationRequest request
         ) {
             
-            Console.WriteLine($"criteria: {request.criteria}");
             int count = 0;
             if (request.criteria == OrderPaginagionCount.All) {
                 count = await this._orderRepository.GetPageCount();
